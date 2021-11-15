@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Index{% endblock %}
+{% block head %}
+
+{{ super() }}
+
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="jumbotron p-3">
+                <h2><b>PATRIMÔNIOS</b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
+                        data-target=#mymodal> ADICIONAR NOVO </button></h2>
+
+
+                {% with messages = get_flashed_messages() %}
+ 
+                {% if messages %}
+ 
+                {% for message in messages %}
+ 
+                <div class="alert alert-success alert-dismissable" role="alert">
+ 
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+ 
+                        <span aria-hidden="true">x</span>
+ 
+                    </button>
+ 
+ 
+                {{message}}
+ 
+ 
+                </div>
+ 
+ 
+                {% endfor %}
+ 
+                {% endif %}
+                {% endwith %}
+
+                <table class="table table-hover table-dark">
+
+                    <tr>
+                        <th>ID</th>
+                        <th>NOME</th>
+                        <th>TIPO</th>
+                        <th>NÚMERO</th>
+                        <th>AÇÃO</th>
+                    </tr>
+
+                     {% for linha in todosPatrimonio %}   
+
+                    <tr>
+                        <th>{{linha.id}}</th>
+                        <th>{{linha.nome}}</th>
+                        <th>{{linha.tipo}}</th>
+                        <th>{{linha.numero}}</th>
+                        <td>
+                            <a href="/patrimonioUpdate/{{linha.id}}" class="btn btn-warning btn-xs" data-toggle="modal"
+                                data-target="#modaledit{{linha.id}}">EDITAR</a>
+                            <a href="/patrimonioDelete/{{linha.id}}" class="btn btn-danger btn-xs"
+                                onclick="return confirm('Deseja realmente apagar?')">APAGAR</a>
+                        </td>
+                    </tr>
+
+                    <!-- Modal Edit Employee-->
+                    <div id="modaledit{{linha.id}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+
+                            <div class="modal-content">
+
+
+                                <div class="modal-header">
+
+
+                                    <h4 class="modal-title">ATUALIZAÇÃO DE PATRIMONIO</h4>
+
+
+                                </div>
+
+
+                                <div class="modal-body">
+
+
+                                    <form action="{{url_for('patrimonioUpdate')}}" method="POST">
+
+
+                                        <div class="form-group">
+
+
+                                            <label>Nome:</label>
+                                            <input type="hidden" name="id" value="{{linha.id}}">
+
+                                            <input type="text" class="form-control" name="nome" value="{{linha.nome}}">
+
+
+                                        </div>
+
+
+
+                                        <div class="form-group">
+
+
+                                            <label>Tipo:</label>
+
+                                            <input type="text" class="form-control" name="tipo" value="{{linha.tipo}}">
+
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+
+                                            <label>Número:</label>
+
+                                            <input type="text" class="form-control" name="numero" value="{{linha.numero}}">
+
+
+                                        </div>
+
+
+                                        <div class="form-group">
+
+
+                                            <button class="btn btn-primary" type="submit">ATUALIZAR</button>
+
+
+                                        </div>
+
+
+                                    </form>
+
+
+                                </div>
+
+
+                                <div class="modal-footer">
+
+
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}   
+
+                </table>
+            </div>
+            <!--MY MODAL HERE-->
+
+            <div id="mymodal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 class="modal-title">Adicionando Patrimônio</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="salvar" method="POST">
+
+
+                                <div class="form-group">
+
+                                    <label>Nome:</label>
+                                    <input type="text" class="form-control" name="nome" required="1">
+
+
+                                </div>
+
+
+                                <div class="form-group">
+
+
+                                    <label>Tipo:</label>
+                                    <input type="text" class="form-control" name="tipo" required="1">
+
+
+                                </div>
+
+
+                                <div class="form-group">
+
+
+                                    <label>Numero:</label>
+                                    <input type="number" class="form-control" name="numero" required="1">
+
+
+                                </div>
+
+
+
+                                <div class="form-group">
+
+
+                                    <button class="btn btn-primary" name="salvar" type="">SALVAR</button>
+
+
+                                </div>
+
+
+                            </form>
+
+
+                        </div>
+
+
+                        <div class="modal-footer">
+
+
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+
+        </div>
+        <!--/ Col end -->
+    </div>
+    <!--/ Row end -->
+    {% endblock %}

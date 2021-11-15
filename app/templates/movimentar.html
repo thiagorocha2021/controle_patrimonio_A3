@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+
+{% block title %}movimentar{% endblock %}
+{% block head %}
+
+{{ super() }}
+
+{% endblock %}
+
+{% block content %}
+<br>
+{% with messages = get_flashed_messages() %}
+
+{% if messages %}
+
+{% for message in messages %}
+
+<div class="alert alert-success alert-dismissable" role="alert">
+
+    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+
+        <span aria-hidden="true">x</span>
+
+    </button>
+
+
+    {{message}}
+
+
+</div>
+
+
+{% endfor %}
+
+{% endif %}
+{% endwith %}
+
+
+<br>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <div class="jumbotron p-3">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 class="modal-title">PATRIMONIO</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="" method="POST">
+
+                                <div class="form-group">
+                                    <label for="fornecedor">Nome do patrimônio</label>
+                                    <select class="form-control" id="id_patrimonio_mov" name="id_patrimonio_mov"
+                                        required>
+                                        <option disabled selected value> -- selecione um patrimônio -- </option>
+                                        {% for patrimonio in todasPatrimonio %}
+                                        <option value="{{patrimonio.id_patrimonio}}">( {{patrimonio.n_patrimonio}} ) - {{patrimonio.nome}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="fornecedor">Destino</label>
+                                    <select class="form-control" id="id_colaborador_mov" name="id_colaborador_mov"
+                                        required>
+                                        <option disabled selected value> -- selecione um destino -- </option>
+                                        {% for colaborador in todasColaborador %}
+                                        <option value="{{colaborador.id_colaborador}}">{{colaborador.nome}} -- {{colaborador.filial.nome}} -- {{colaborador.filial.cidade.nome}} -- {{colaborador.cargo.nome}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+
+
+                                    <button class="btn btn-primary" name="salvar" type="">SALVAR</button>
+
+
+                                </div>
+
+
+                            </form>
+
+
+                        </div>
+
+
+                        <div class="modal-footer"></div>
+
+
+                    </div>
+
+
+
+
+
+
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+    
+    <!--############-->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="jumbotron p-3">
+
+
+
+                <table class="table table-bordered table-dark">
+
+                    <tr>
+                        <!--<th>Nº REGISTRO</th>  -->
+                        <th>NUMERO PATRIMÔNIO</th>
+                        <th>NOME PATRIMÔNIO</th>
+                        <th>NOME DO PORTADOR</th>
+                        <th>ACÕES</th>
+                    </tr>
+
+                    {% for movimentado in todasMovimentado %}
+
+                    <tr>
+                        <!--<th>{{movimentado.id_movimentado}}</th>   -->
+                        <th>{{movimentado.patrimonio.n_patrimonio}}</th>
+                        <th>{{movimentado.patrimonio.nome}}</th>
+                        <th>{{movimentado.colaborador.nome}}</th>
+                        
+                        <td>
+                            <a href="" class="btn btn-warning btn-xs"
+                                data-toggle="modal" data-target="">EDITAR</a>
+
+       
+                            <a href="" class="btn btn-info" data-toggle="modal"
+                                data-target="">DETALHES</a>
+
+                           <a href="/movimentadoDelete/{{movimentado.id_movimentado}}" class="btn btn-danger btn-xs"
+                                onclick="return confirm('Deseja realmente apagar?')">APAGAR</a>
+
+                        </td>
+                    </tr>
+
+                    <!--INICIO MODAL DETALHE-->
+
+                    <div id="modaldetalhe{{movimentado.id_filial}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">DETALHE DA FILIAL</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <form action="" method="POST">
+
+
+                                        <div class="form-group">
+                                            <label>Nome:</label>
+                                            <input class="form-control" type="text" placeholder=""
+                                                readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Endereco:</label>
+                                            <input class="form-control" type="text" placeholder=""
+                                                readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>CNPJ:</label>
+                                            <input class="form-control" type="text" placeholder=""
+                                                readonly>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>Cidade:</label>
+                                            <input class="form-control" type="text" placeholder=""
+                                                readonly>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>Estado:</label>
+                                            <input class="form-control" type="text"
+                                                placeholder="" readonly>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>Pais:</label>
+                                            <input class="form-control" type="text" placeholder=""
+                                                readonly>
+                                        </div>
+
+
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!--FIM MODAL DETALHE-->
+
+
+
+                    <!-- INICIO MODAL EDITAL-->
+                    <div id="modaledit{{movimentado.id_movimentado}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">ATUALIZAÇÃO DA FILIAL</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <form action="{{url_for('filialUpdate')}}" method="POST">
+
+
+                                        <div class="form-group">
+                                            <label>Nome:</label>
+                                            <input type="hidden" name="id" value="">
+                                            <input type="text" class="form-control" name="nome" value="">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Endereco:</label>
+                                            <input type="text" class="form-control" name="endereco"
+                                                value="">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>CNPJ:</label>
+                                            <input type="text" class="form-control" name="cnpj" value="">
+                                        </div>
+
+
+
+                                        <div class="form-group">
+                                            <label for="fornecedor">Cidade</label>
+                                            <select class="form-control" id="id_cidade" name="id_cidade">
+                                                <option value="">
+                                                </option>
+                                                {% for linha in todasCidade %}
+                                                <option value=""></option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+
+
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="submit">ATUALIZAR</button>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </table>
+            </div>
+            <!--FIM MODAL EDITAR-->
+
+            <div id="mymodal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 class="modal-title">Adicionando Filial</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="" method="POST">
+
+
+                                <div class="form-group">
+                                    <label>Nome:</label>
+                                    <input type="text" class="form-control" name="nome" required="5">
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>Endereco:</label>
+                                    <input type="text" class="form-control" name="endereco" required="5">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>CNPJ:</label>
+                                    <input type="text" class="form-control" name="cnpj" required="5">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="fornecedor">Cidade</label>
+                                    <select class="form-control" id="id_cidade" name="id_cidade" required>
+                                        <option disabled selected value> -- selecione uma opção -- </option>
+                                        {% for linha in todasCidade %}
+                                        <option value=""></option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group">
+
+
+                                    <button class="btn btn-primary" name="salvar" type="">SALVAR</button>
+
+
+                                </div>
+
+
+                            </form>
+
+
+                        </div>
+
+
+                        <div class="modal-footer">
+
+
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+    {% endblock %}

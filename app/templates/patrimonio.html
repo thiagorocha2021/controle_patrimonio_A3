@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+
+{% block title %}Patrimonio{% endblock %}
+{% block head %}
+
+{{ super() }}
+
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <div class="input-group">
+                <input type="search" class="form-control rounded" placeholder="-- busca --" aria-label="Search"
+                aria-describedby="search-addon" />
+                <button type="button" name="busca" class="btn btn-outline-dark">BUSCAR</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="jumbotron p-3" >
+                <h2> <b>PATRIMÔNIOS</b> <button  type="button" class="btn btn-success float-right" data-toggle="modal"
+                        data-target=#mymodal> ADICIONAR NOVO </button></h2>
+
+
+                {% with messages = get_flashed_messages() %}
+
+                {% if messages %}
+
+                {% for message in messages %}
+
+                <div class="alert alert-success alert-dismissable" role="alert">
+
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+
+                        <span aria-hidden="true">x</span>
+
+                    </button>
+
+
+                    {{message}}
+
+
+                </div>
+
+
+                {% endfor %}
+
+                {% endif %}
+                {% endwith %}
+
+                <table class="table table-bordered table-dark" >
+
+                    <tr>
+                        <th>ID</th>
+                        <th>NOME</th>
+                        <th>CATEGORIA</th>
+                        <th>Nº SERIE</th>
+                        <th>Nº PATRIMÔNIO</th>
+                        <th>ACÕES</th>
+                    </tr>
+
+                    {% for linha in todosPatrimonio %}
+
+                    <tr>
+                        <th>{{linha.id_patrimonio}}</th>
+                        <th>{{linha.nome}}</th>
+                        <th>{{linha.categoria}}</th>
+                        <th>{{linha.n_serie}}</th>
+                        <th>{{linha.n_patrimonio}}</th>
+
+                        <td>
+                            <a href="/patrimonioUpdate/{{linha.id_patrimonio}}"
+                                class="btn btn-warning btn-xs" data-toggle="modal"
+                                data-target="#modaledit{{linha.id_patrimonio}}">EDITAR</a>
+
+                            <a href="/patrimonioDelete/{{linha.id_patrimonio}}" class="btn btn-danger btn-xs"
+                                onclick="return confirm('Deseja realmente apagar?')">APAGAR</a>
+
+                            <a href="" class="btn btn-info" data-toggle="modal"
+                                data-target="#modaldetalhe{{linha.id_patrimonio}}">DETALHES</a>
+
+                        </td>
+                    </tr>
+
+                    <!--INICIO MODAL DETALHE-->
+
+                    <div id="modaldetalhe{{linha.id_patrimonio}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h4 class="modal-title">DETALHE DO PATRIMONIO</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <form action="{{url_for('patrimonioUpdate')}}" method="POST">
+
+                                        <div class="first-column">
+
+                                            <div class="form-group">
+                                                <label>Nome:</label>
+                                                <input class="form-control" type="text"
+                                                    placeholder="{{linha.nome}}" readonly>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Categoria:</label>
+                                                <input class="form-control" type="text"
+                                                    placeholder="{{linha.categoria}}" readonly>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Número de Serie:</label>
+                                                <input class="form-control" type="text"
+                                                    placeholder="{{linha.n_serie}}" readonly>
+                                            </div>
+
+                                       </div>
+
+                                       <div class="second-column">                                       
+
+                                            <div class="form-group">
+                                                <label>Número de Patrimonio:</label>
+                                                <input class="form-control" type="text"
+                                                    placeholder="{{linha.n_patrimonio}}" readonly>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Fornecedor:</label>
+                                                <input class="form-control" type="text"
+                                                    placeholder="{{linha.fornecedor.nome}}" readonly>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--FIM MODAL DETALHE-->
+
+
+                     <!-- INICIO MODAL DE EDITAR -->
+                    <div id="modaledit{{linha.id_patrimonio}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">ATUALIZAÇÃO DE PATRIMONIO</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <form action="{{url_for('patrimonioUpdate')}}" method="POST">
+
+                                        <div class="form-group">
+                                            <label>Nome:</label>
+                                            <input type="hidden" name="id" value="{{linha.id_patrimonio}}">
+                                            <input type="text" class="form-control" name="nome"
+                                                value="{{linha.nome}}">
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label for="fornecedor">Categoria</label>
+                                            <select class="form-control" id="categoria" name="categoria">
+                                                <option>{{linha.categoria}}</option>
+                                                {% for categoria in categorias %}
+                                                <option>{{categoria}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+
+
+        
+                                        
+
+                                        <div class="form-group">
+                                            <label>Número de Serie:</label>
+                                            <input type="text" class="form-control" name="n_serie"
+                                                value="{{linha.n_serie}}">
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>Número de Patrimonio:</label>
+                                            <input type="text" class="form-control" name="n_patrimonio"
+                                                value="{{linha.n_patrimonio}}">
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label for="fornecedor">Fornecedor</label>
+                                                <select class="form-control" id="id_fornecedor" name="id_fornecedor">
+                                                    <option value="{{linha.fornecedor.id_fornecedor}}" >{{linha.fornecedor.nome}}</option>
+                                                {% for fornecedor in todosFornecedor %}
+                                                    <option value="{{fornecedor.id_fornecedor}}">{{fornecedor.nome}}</option>
+                                                {% endfor %}
+                                                </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="submit">ATUALIZAR</button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </table>
+            </div>
+            <!-- INICIO MODAL DE EDITAR -->
+
+
+            <!-- INICIO MODAL DE NOVO -->
+            <div id="mymodal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 class="modal-title">Adicionando Patrimônio</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="" method="POST">
+
+
+                                <div class="form-group">
+                                    <label>Nome:</label>
+                                    <input type="text" class="form-control" name="nome" required="4">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="fornecedor">Categoria</label>
+                                    <select class="form-control" id="categoria" name="categoria" required>
+                                        <option disabled selected value> -- selecione uma opção -- </option>
+                                        {% for categoria in categorias %}
+                                        <option>{{categoria}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+
+                                <div class="form-group">
+                                    <label>Número de Serie:</label>
+                                    <input type="text" class="form-control" name="n_serie">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Número do Patrimonio:</label>
+                                    <input type="number" class="form-control" name="n_patrimonio" required="1">
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="fornecedor">Fornecedor</label>
+                                    <select class="form-control" id="fornecedor" name="fornecedor" required>
+                                        <option disabled selected value> -- selecione uma opção -- </option>
+                                        {% for fornecedor in todosFornecedor %}
+                                        <option value="{{fornecedor.id_fornecedor}}">{{fornecedor.nome}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary" name="salvar" type="">SALVAR</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% endblock %}

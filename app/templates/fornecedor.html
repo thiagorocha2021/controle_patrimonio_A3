@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block title %}Fornecedor{% endblock %}
+{% block head %}
+
+{{ super() }}
+
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <div class="input-group">
+                <input type="search" class="form-control rounded" placeholder="-- busca --" aria-label="Search"
+                    aria-describedby="search-addon" />
+                <button type="button" name="busca" class="btn btn-outline-dark">BUSCAR</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="jumbotron p-3">
+                <h2><b>FORNECEDOR</b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
+                        data-target=#mymodal> ADICIONAR NOVO </button></h2>
+
+
+                {% with messages = get_flashed_messages() %}
+
+                {% if messages %}
+
+                {% for message in messages %}
+
+                <div class="alert alert-success alert-dismissable" role="alert">
+
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+
+                        <span aria-hidden="true">x</span>
+
+                    </button>
+
+
+                    {{message}}
+
+
+                </div>
+
+
+                {% endfor %}
+
+                {% endif %}
+                {% endwith %}
+
+                <table class="table table-bordered table-dark">
+
+                    <tr>
+                        <th>ID</th>
+                        <th>NOME</th>
+                        <th>CNPJ</th>
+                        <th>ENDEREÇO</th>
+                        <th>TELEFONE</th>
+                        <th>AÇÕES</th>
+
+
+                    </tr>
+
+                    {% for linha in todosFornecedor %}
+
+                    <tr>
+                        <th>{{linha.id_fornecedor}}</th>
+                        <th>{{linha.nome}}</th>
+                        <th>{{linha.cnpj}}</th>
+                        <th>{{linha.endereco}}</th>
+                        <th>{{linha.telefone}}</th>
+                        <td>
+                            <a href="/fornecedorUpdate/{{linha.id_fornecedor}}" class="btn btn-warning btn-xs"
+                                data-toggle="modal" data-target="#modaledit{{linha.id_fornecedor}}">EDITAR</a>
+                            <!--
+                            <a href="/fornecedorDelete/{{linha.id_fornecedor}}" class="btn btn-danger btn-xs"
+                                onclick="return confirm('Deseja realmente apagar?')">APAGAR</a>
+-->
+
+                            <a href="" class="btn btn-info" data-toggle="modal"
+                                data-target="#modaldetalhe{{linha.id_fornecedor}}">DETALHES</a>
+
+
+
+
+                        </td>
+                    </tr>
+
+                    <!--INICIO MODAL DETALHE-->
+
+                    <div id="modaldetalhe{{linha.id_fornecedor}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">DETALHE DO FORNECEDOR</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <form action="" method="POST">
+
+
+                                        <div class="form-group">
+                                            <label>Nome:</label>
+                                            <input class="form-control" type="text" placeholder="{{linha.nome}}"
+                                                readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>CNPJ:</label>
+                                            <input class="form-control" type="text" placeholder="{{linha.cnpj}}"
+                                                readonly>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>Endereco:</label>
+                                            <input class="form-control" type="text" placeholder="{{linha.endereco}}"
+                                                readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Telefone:</label>
+                                            <input class="form-control" type="text" placeholder="{{linha.telefone}}"
+                                                readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Cidade:</label>
+                                            <input class="form-control" type="text" placeholder="{{linha.cidade}}"
+                                                readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Pais:</label>
+                                            <input class="form-control" type="text" placeholder="{{linha.pais}}"
+                                                readonly>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--FIM MODAL DETALHE-->
+
+
+
+                    <!-- INICIO MODAL EDITAL-->
+                    <div id="modaledit{{linha.id_fornecedor}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">ATUALIZAÇÃO DE FORNECEDOR</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <form action="{{url_for('fornecedorUpdate')}}" method="POST">
+
+
+                                        <div class="form-group">
+                                            <label>Nome:</label>
+                                            <input type="hidden" name="id" value="{{linha.id_fornecedor}}">
+                                            <input type="text" class="form-control" name="nome" value="{{linha.nome}}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>CNPJ:</label>
+                                            <input type="text" class="form-control" name="cnpj" value="{{linha.cnpj}}">
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>Endereço:</label>
+                                            <input type="text" class="form-control" name="endereco"
+                                                value="{{linha.endereco}}">
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>Telefone:</label>
+                                            <input type="text" class="form-control" name="telefone"
+                                                value="{{linha.telefone}}">
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>Cidade:</label>
+                                            <input type="text" class="form-control" name="cidade"
+                                                value="{{linha.cidade}}">
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>Pais:</label>
+                                            <input type="text" class="form-control" name="pais" value="{{linha.pais}}">
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="submit">ATUALIZAR</button>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </table>
+            </div>
+            <!--FIM MODAL EDITAR-->
+
+            <div id="mymodal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 class="modal-title">Adicionando Fornecedor</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="" method="POST">
+
+
+                                <div class="form-group">
+
+                                    <label>Nome:</label>
+                                    <input type="text" class="form-control" name="nome" required="5">
+
+
+                                </div>
+
+                                <!--
+                                <div class="form-group">
+                                    <label>CNPJ:</label>
+                                    <input type="text" class="form-control" name="cnpj">
+                                </div>
+
+                            -->
+                                <div class="form-group">
+                                    <label>CNPJ:</label>
+                                    <input type="tel" class="form-control" name="cnpj" id="cnpj" />
+                                    <script type="text/javascript">$("#cnpj").mask("00.000.000/0000-00");</script>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label>ENDEREÇO:</label>
+                                    <input type="text" class="form-control" name="endereco">
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>TELEFONE:</label>
+                                    <input type="tel" class="form-control" name="telefone" id="telefone"
+                                        pattern="\([0-9]{2}\)[\s][0-9]{4}-[0-9]{4,5}" />
+                                    <script type="text/javascript">$("#telefone").mask("(00) 0000-00009");</script>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>CIDADE:</label>
+                                    <input type="text" class="form-control" name="cidade">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>PAIS:</label>
+                                    <input type="text" class="form-control" name="pais">
+                                </div>
+
+
+                                <div class="form-group">
+
+
+                                    <button class="btn btn-primary" name="salvar" type="">SALVAR</button>
+
+
+                                </div>
+
+
+                            </form>
+
+
+                        </div>
+
+
+                        <div class="modal-footer">
+
+
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+        <!--/ Col end -->
+    </div>
+    <!--/ Row end -->
+    {% endblock %}

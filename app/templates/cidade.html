@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block title %}Fornecedor{% endblock %}
+{% block head %}
+
+{{ super() }}
+
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <div class="input-group">
+                <input type="search" class="form-control rounded" placeholder="-- busca --" aria-label="Search"
+                aria-describedby="search-addon" />
+                <button type="button" name="busca" class="btn btn-outline-dark">BUSCAR</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="jumbotron p-3">
+                <h2><b>CIDADE</b> <button type="button" class="btn btn-success float-right" data-toggle="modal"
+                        data-target=#mymodal> ADICIONAR NOVO </button></h2>
+
+
+                {% with messages = get_flashed_messages() %}
+
+                {% if messages %}
+
+                {% for message in messages %}
+
+                <div class="alert alert-success alert-dismissable" role="alert">
+
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+
+                        <span aria-hidden="true">x</span>
+
+                    </button>
+
+
+                    {{message}}
+
+
+                </div>
+
+
+                {% endfor %}
+
+                {% endif %}
+                {% endwith %}
+
+                <table class="table table-bordered table-dark">
+
+                    <tr>
+                        <th>ID</th>
+                        <th>NOME</th>
+                        <th>ESTADO</th>
+                        <th>PAIS</th>
+                        <th>AÇÕES</th>
+                    </tr>
+
+                    {% for linha in todosCidades %}
+
+                    <tr>
+                        <th>{{linha.id_cidade}}</th>
+                        <th>{{linha.nome}}</th>
+                        <th>{{linha.estado}}</th>
+                        <th>{{linha.pais}}</th>
+                        <td>
+                            <a href="/cidadeUpdate/{{linha.id_cidade}}" class="btn btn-warning btn-xs"
+                                data-toggle="modal" data-target="#modaledit{{linha.id_cidade}}">EDITAR</a>
+
+<!--                            <a href="/cidadeDelete/{{linha.id_cidade}}" class="btn btn-danger btn-xs"
+                                onclick="return confirm('Deseja realmente apagar?')">APAGAR</a>
+-->
+
+                            <a href="" class="btn btn-info" data-toggle="modal"
+                                data-target="#modaldetalhe{{linha.id_cidade}}">DETALHES</a>
+
+
+
+
+                        </td>
+                    </tr>
+
+                    <!--INICIO MODAL DETALHE-->
+
+                    <div id="modaldetalhe{{linha.id_cidade}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">DETALHE DA CIDADE</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <form action="" method="POST">
+                                        
+                                      
+                                        <div class="form-group">                       
+                                            <label>Nome:</label>
+                                            <input class="form-control" type="text" placeholder="{{linha.nome}}"
+                                                readonly>
+                                        </div>
+    
+                                        
+                                        <div class="form-group">                       
+                                            <label>Estado:</label>
+                                            <input class="form-control" type="text" placeholder="{{linha.estado}}"
+                                                readonly>
+                                        </div>
+                                        
+                                        <div class="form-group">                       
+                                            <label>País:</label>
+                                            <input class="form-control" type="text" placeholder="{{linha.pais}}"
+                                                readonly>
+                                        </div>
+
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--FIM MODAL DETALHE-->
+
+
+
+                    <!-- INICIO MODAL EDITAL-->
+                    <div id="modaledit{{linha.id_cidade}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">ATUALIZAÇÃO DE CIDADE</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <form action="{{url_for('cidadeUpdate')}}" method="POST">
+
+                                        <div class="form-group">
+                                            <label>Categoria:</label>
+                                            <select class="form-control" id="estado" name="estado" required>
+                                                <option>{{linha.estado}}</option>
+                                                {% for estado in estados%}
+                                                <option>{{estado}}</option>>
+                                                {% endfor %}
+                                            </select>    
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>Nome da Cidade:</label>
+                                            <input type="hidden" name="id" value="{{linha.id_cidade}}">
+                                            <input type="text" class="form-control" name="nome" value="{{linha.nome}}">
+                                        </div>
+
+                                    
+
+                                        <div class="form-group">
+                                            <label>País:</label>
+                                            <select class="form-control" id="pais" name="pais" required>
+                                                <option>{{linha.pais}}</option>
+                                                {% for pais in paises %}
+                                                <option>{{pais}}</option>>
+                                                {% endfor %}
+                                            </select>    
+                                        </div>
+
+
+
+
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="submit">ATUALIZAR</button>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </table>
+            </div>
+            <!--FIM MODAL EDITAR-->
+
+            <div id="mymodal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 class="modal-title">Adicionando Cidade</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="" method="POST">
+
+
+                                <div class="form-group">
+
+                                    <div class="form-group">
+                                        <label for="Estado">Estado</label>
+                                        <select class="form-control" id="estado" name="estado">
+                                            <option disabled selected value> -- selecione uma opção -- </option>
+                                            {% for estados in estados %}
+                                            <option value="{{estados}}">{{estados}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+
+                                    <label>Nome da Cidade:</label>
+                                    <input type="text" class="form-control" name="nome" required="5">
+
+                                </div>
+
+
+
+
+                                <div class="form-group">
+                                    <label for="Estado">País</label>
+                                    <select class="form-control" id="estado" name="pais">
+                                        <option disabled selected value> -- selecione uma opção -- </option>
+                                        {% for pais in paises %}
+                                        <option value="{{pais}}">{{pais}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+
+
+
+
+                                <div class="form-group">
+
+
+                                    <button class="btn btn-primary" name="salvar" type="">SALVAR</button>
+
+
+                                </div>
+
+
+                            </form>
+
+
+                        </div>
+
+
+                        <div class="modal-footer">
+
+
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+        <!--/ Col end -->
+    </div>
+    <!--/ Row end -->
+    {% endblock %}
